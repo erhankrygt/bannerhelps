@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bannerhelps/internal"
+	"bannerhelps"
 	"bannerhelps/internal/client/pdf"
 	"bannerhelps/internal/client/voice"
 	ep "bannerhelps/internal/handlers"
@@ -26,7 +26,7 @@ func main() {
 		pf = pdf.NewClient(cleanhttp.DefaultPooledClient())
 	}
 
-	var s internal.Service
+	var s bannerhelps.Service
 	{
 		s = service.NewService("", vo, pf)
 	}

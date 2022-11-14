@@ -1,7 +1,7 @@
 package service
 
 import (
-	"bannerhelps/internal"
+	"bannerhelps"
 	"bannerhelps/internal/client/pdf"
 	"bannerhelps/internal/client/voice"
 	"context"
@@ -11,7 +11,7 @@ import (
 )
 
 // compile-time proofs of service interface implementation
-var _ internal.Service = (*Service)(nil)
+var _ bannerhelps.Service = (*Service)(nil)
 
 // Service represents service
 type Service struct {
@@ -22,7 +22,7 @@ type Service struct {
 }
 
 // NewService creates and returns service
-func NewService(env string, voc voice.Client, pfc pdf.Client) internal.Service {
+func NewService(env string, voc voice.Client, pfc pdf.Client) bannerhelps.Service {
 	return &Service{
 		env: env,
 		voc: voc,
@@ -30,14 +30,14 @@ func NewService(env string, voc voice.Client, pfc pdf.Client) internal.Service {
 	}
 }
 
-func (s *Service) PdfToVoice(_ context.Context, req internal.PdfToVoiceRequest) internal.PdfToVoiceResponse {
-	res := internal.PdfToVoiceResponse{}
+func (s *Service) PdfToVoice(_ context.Context, req bannerhelps.PdfToVoiceRequest) bannerhelps.PdfToVoiceResponse {
+	res := bannerhelps.PdfToVoiceResponse{}
 	clientID := uuid.New().String()
 
 	pdfFilePath, err := s.pfc.Save(req.File, clientID)
 	if err != nil {
 		res.IsSuccessfully = false
-		res.Error = &internal.ExternalAError{
+		res.Error = &bannerhelps.ExternalAError{
 			Code:    400,
 			Message: err.Error(),
 		}
@@ -48,7 +48,7 @@ func (s *Service) PdfToVoice(_ context.Context, req internal.PdfToVoiceRequest) 
 	text, err := s.pfc.ConvertToText(pdfFilePath)
 	if err != nil {
 		res.IsSuccessfully = false
-		res.Error = &internal.ExternalAError{
+		res.Error = &bannerhelps.ExternalAError{
 			Code:    400,
 			Message: err.Error(),
 		}
@@ -60,7 +60,7 @@ func (s *Service) PdfToVoice(_ context.Context, req internal.PdfToVoiceRequest) 
 	filePath, err := s.voc.MergeAllSpeak(req.FileName, files, clientID)
 	if err != nil {
 		res.IsSuccessfully = false
-		res.Error = &internal.ExternalAError{
+		res.Error = &bannerhelps.ExternalAError{
 			Code:    400,
 			Message: err.Error(),
 		}

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"bannerhelps/internal"
+	"bannerhelps"
 	"context"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -17,9 +17,9 @@ const (
 )
 
 var Handlers = struct {
-	PDFtoVoiceHandler func(s internal.Service, c *gin.Context)
+	PDFtoVoiceHandler func(s bannerhelps.Service, c *gin.Context)
 }{
-	PDFtoVoiceHandler: func(s internal.Service, c *gin.Context) {
+	PDFtoVoiceHandler: func(s bannerhelps.Service, c *gin.Context) {
 		ctx := context.Background()
 
 		pdf, err := c.FormFile("file")
@@ -53,7 +53,7 @@ var Handlers = struct {
 
 		fName := strings.ReplaceAll(pdf.Filename, extension, "")
 
-		req := internal.PdfToVoiceRequest{
+		req := bannerhelps.PdfToVoiceRequest{
 			CurrentLanguage: c.PostForm("documentLanguage"),
 			File:            file,
 			FileName:        fName,
